@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 BOX_NAME = ENV["BOX_NAME"] || "bento/ubuntu-14.04"
-BOX_MEMORY = ENV["BOX_MEMORY"] || "1024"
+BOX_MEMORY = ENV["BOX_MEMORY"] || "2048"
 DOKKU_DOMAIN = ENV["DOKKU_DOMAIN"] || "dokku.me"
 DOKKU_IP = ENV["DOKKU_IP"] || "10.0.0.2"
 FORWARDED_PORT = (ENV["FORWARDED_PORT"] || '8080').to_i
@@ -18,6 +18,16 @@ Vagrant::configure("2") do |config|
   config.ssh.forward_agent = true
 
   config.vm.box = BOX_NAME
+
+  #websites
+  config.vm.synced_folder "/websites", "/websites-nfs",
+  type: "nfs",
+  mount_options:['actimeo=2']
+  config.bindfs.bind_folder "/websites-nfs", "/websites",
+  perms: "u=rwx:g=rwx:o=rwx",
+  o:"nonempty",
+  chown_ignore: true,
+  chgrp_ignore: true
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -42,14 +52,6 @@ Vagrant::configure("2") do |config|
     vm.vm.provision :shell, :inline => "cd /root/dokku && make dokku-installer"
   end
 
-  # For windows users. Sharing folder from windows creates problem with sym links and so, sync the repo instead from GOS.
-  config.vm.define "dokku-windows", autostart: false do |vm|
-    vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
-    vm.vm.hostname = "#{DOKKU_DOMAIN}"
-    vm.vm.network :private_network, ip: DOKKU_IP
-    vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update > /dev/null && apt-get -qq -y install git > /dev/null"
-    vm.vm.provision :shell, :inline => "cd /vagrant/ && export DOKKU_BRANCH=`git symbolic-ref -q --short HEAD 2>/dev/null` && export DOKKU_TAG=`git describe --tags --exact-match 2>/dev/null` && cd /root/ && cp /vagrant/bootstrap.sh ./ && bash bootstrap.sh"
-  end
 
   config.vm.define "dokku-deb", autostart: false do |vm|
     vm.vm.synced_folder File.dirname(__FILE__), "/root/dokku"
