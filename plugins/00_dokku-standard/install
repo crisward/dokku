@@ -9,7 +9,7 @@ if [[ ! -f  "$DOKKU_ROOT/VHOST" ]]; then
   [[ $(dig +short "$(< "$DOKKU_ROOT/HOSTNAME")") ]] && cp "$DOKKU_ROOT/HOSTNAME" "$DOKKU_ROOT/VHOST"
 fi
 
-# temporary hack for https://github.com/progrium/dokku/issues/82
+# temporary hack for https://github.com/dokku/dokku/issues/82
 # redeploys all apps after a reboot
 case "$DOKKU_DISTRO" in
   ubuntu)
@@ -20,7 +20,7 @@ start on filesystem and started docker
 
 script
   sleep 2 # give docker some time
-  sudo -i -u dokku /usr/local/bin/dokku ps:restartall
+  sudo -i -u dokku /usr/local/bin/dokku ps:restore
 end script
 EOF
     ;;
@@ -34,11 +34,12 @@ After=docker.target
 [Service]
 Type=simple
 User=dokku
-ExecStart=/usr/local/bin/dokku ps:restartall
+ExecStart=/usr/local/bin/dokku ps:restore
 
 [Install]
 WantedBy=multi-user.target
 EOF
+    systemctl enable dokku-redeploy
     ;;
 esac
 

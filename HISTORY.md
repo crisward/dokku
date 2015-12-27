@@ -1,5 +1,120 @@
 # History
 
+## 0.4.7
+
+### Bug Fixes
+
+- #1776: @t-8ch Fix docker version constraints on jessie systems
+- #1777: @michaelshobbs Format test labels
+- #1782: @michaelshobbs make docker cp work on circleci
+- #1788: @michaelshobbs Updates for moving of dokku sshcommand and plugn repos
+- #1791: @michaelshobbs Don't run app deploy tests and spread out unit tests to 4 containers
+- #1793: @michaelshobbs Filter out Procfile comments
+
+### New Features
+
+- #1670: @zachfeldman Add apps:rename
+- #1771: @jvanbaarsen Make plugin hooks send out more information
+- #1778: @mmerickel Optimize git clone for large repositories
+- #1781: @jvanbaarsen Add post config update hook
+- #1789: @michaelshobbs Make it possible to skip a deploy
+- #1790: @michaelshobbs Use pgup/pgdown for history shortcut in dev env
+- #1794: @josegonzalez Replace dokku-installer.rb with dokku-installer.py
+- #1797: @michaelshobbs Ensure we run plugin commands as root
+- #1799: @josegonzalez Add support for tutum-agent as docker alternative
+- #1800: @josegonzalez Respect DOKKU_ROOT in debian/postint
+
+### Documentation
+
+- #1779: @sseemayer Add link to new zero-downtime Let's Encrypt Plugin to docs
+- #1780: @jvanbaarsen Add documentation for the new domain plugin hooks
+- #1784: @duboff Tiny fix in SSL documentation
+
+## 0.4.6
+
+This is mostly a documentation change. A few notable changes:
+
+- Rebooting dokku servers should properly handle not starting stopped services.
+- Better support for newer versions of Debian/Ubuntu.
+- Moved the dokku project to the dokku github organization.
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1717: @josegonzalez Avoid using the PPA for ubuntu versions 15.10 and higher
+- #1727: @louisbl Enable dokku-redeploy systemd service.
+- #1732: @michaelshobbs do not chown file that doesn't exist
+- #1745: @beverku Change herokuish to recommended package
+- #1767: @jvanbaarsen Remove shebang from config/functions
+- #1775: @Flink Match complete container name in named-containers plugin
+
+### New Features
+
+- #1718: @josegonzalez Add post-create hook
+- #1735: @michaelshobbs use ps:restore on instance boot
+
+### Documentation
+
+- #1720: @josegonzalez Add memory usage output as desired data for reporting issues
+- #1723: @josegonzalez Add herokuish version to desired debugging info
+- #1739: @michaelshobbs clarify location of nginx.conf.template in app repo
+- #1747: @josegonzalez Add Lets Encrypt plugin
+- #1748: @byrnedo Added unofficial Nats plugin to plugins.md
+- #1750: @jlachowski New graphite & statsd plugin with grafana frontend added
+- #1751: @josegonzalez Use flat-square style on image badges
+- #1752: @byrnedo Moved dokku-nats into official plugins section
+- #1753: @hhff Add .ca-bundle information to SSL docs
+- #1754: @josegonzalez Update all links to dokku repo
+- #1757: @josegonzalez Add DigitalOcean as a sponsor
+- #1761: @josegonzalez Fix link to docker-options documentation
+
+## 0.4.5
+
+This release is mostly a bugfix release. Two notable changes:
+
+- It is now possible to build complex authentication layers around dokku using the new user auth plugin trigger introduced in #1671.
+- We have a Code of Conduct in our repository. Please refer to this document if you have any questiosn regarding what is acceptable in the Dokku community.
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1666: @michaelshobbs Revert dokku group changes and add dokku user to adm group
+- #1667: @u2mejc Fix dokku certs:add file input bug
+- #1684: @u2mejc Cause certs:remove to return non zero on error
+- #1690: @u2mejc Fix "App tls has not been deployed" error
+- #1696: @michaelshobbs chown plugins paths to dokku:dokku
+- #1698: @pmvieira Ensure curl is installed inside of source-based installations
+- #1700: @michaelshobbs copy nginx.ssl.template from app container
+- #1701: @michaelshobbs Don't call nginx_build_config twice
+- #1702: @josegonzalez Remove extra whitespace in command output
+- #1703: @josegonzalez Fix casing on help output
+- #1706: @michaelshobbs Respect DOKKU_RM_CONTAINER in run phase
+- #1707: @Flink Do a perfect match on the container name in named-containers plugin
+- #1708: @michaelshobbs ensure permissions are locked down on tls folder and contents
+- #1709: @michaelshobbs Fix Must specify DOMAIN error over ssh
+- #1712: @michaelshobbs filter incompatible docker option when building dockerfile vs herokuish apps
+- #1715: @michaelshobbs use patched static buildpack in test
+- @1682: @michaelshobbs Aet nullglob when looking for PORT files
+
+### New Features
+
+- #1665: @callahad Replace curl with wget
+- #1671: @josegonzalez User Auth plugin trigger
+- #1683: @u2mejc Add bats test for certs plugin
+- #1699: @michaelshobbs print where we find DOKKU_SCALE when we find it
+
+### Documentation
+
+- #1642: @cjblomqvist Add new plugin adding app name to env
+- #1674: @josegonzalez Expand buildpack deployment documentation
+- #1675: @josegonzalez Create CODE_OF_CONDUCT.md
+- #1677: @ignlg Added dokku-builders-plugin to plugins page
+- #1681: @josegonzalez Fix email in code of conduct
+- #1694: @MarcDiethelm Improve docker-options doc
+- #1713: @mbriskar Wkhtmltopdf plugin
+
 ## 0.4.4
 
 This release adds a few interesting changes:
@@ -158,9 +273,9 @@ One new feature is colorized logging output, which should make it easier to debu
 
 This is our first minor release in almost a year. Many new features and removals have occurred, so here is a neat summary:
 
-- Plugins are now triggered via `plugn`. Notably, you'll need add a `plugin.toml` to describe the plugin as well as use `plugn trigger` instead of `pluginhook` to trigger plugin callbacks. Please see the [plugin creation documentation](http://progrium.viewdocs.io/dokku/development/plugin-creation/) for more details.
-- A few new official plugins have been added to the core, including [image tagging](http://progrium.viewdocs.io/dokku/application-deployment/), [certificate management](http://progrium.viewdocs.io/dokku/deployment/ssl-configuration/), a tar-based deploy solution, and much more. Check out the *New Features* section for more details.
-- We've removed a few deprecated plugin callbacks. Please see the [plugin triggers documentation](http://progrium.viewdocs.io/dokku/development/plugin-triggers/) to see what is available.
+- Plugins are now triggered via `plugn`. Notably, you'll need add a `plugin.toml` to describe the plugin as well as use `plugn trigger` instead of `pluginhook` to trigger plugin callbacks. Please see the [plugin creation documentation](http://dokku.viewdocs.io/dokku/development/plugin-creation/) for more details.
+- A few new official plugins have been added to the core, including [image tagging](http://dokku.viewdocs.io/dokku/application-deployment/), [certificate management](http://dokku.viewdocs.io/dokku/deployment/ssl-configuration/), a tar-based deploy solution, and much more. Check out the *New Features* section for more details.
+- We've removed a few deprecated plugin callbacks. Please see the [plugin triggers documentation](http://dokku.viewdocs.io/dokku/development/plugin-triggers/) to see what is available.
 - [Official datastorage plugins](https://github.com/dokku) have been created for the most commonly used datastores. If you previously used/maintained a community contributed plugin, please check these out. We'll be adding more official plugins as time goes on.
 
 Thanks to the *many* contributors for making this release our best release so far, and special thanks to both @michaelshobbs and @Flink for pushing along the `0.4.0` release!
@@ -269,7 +384,7 @@ This release is a bugfix release covering dokku packaging.
 
 ## 0.3.23
 
-This release is a bugfix release mostly covering installation and nginx issues. As well, we launched a nicer documentation site [here](http://progrium.viewdocs.io/dokku/). Thanks to all of our contributors for making this a great release!
+This release is a bugfix release mostly covering installation and nginx issues. As well, we launched a nicer documentation site [here](http://dokku.viewdocs.io/dokku/). Thanks to all of our contributors for making this a great release!
 
 ### Bug Fixes
 

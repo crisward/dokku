@@ -121,6 +121,10 @@ dokku_container_log_verbose_quiet() {
 verify_app_name() {
   local APP="$1"
   [[ ! -n "$APP" ]] && dokku_log_fail "(verify_app_name) APP must not be null"
+  if [[ ! "$APP" =~ ^[a-z].* && ! "$APP" =~ ^[0-9].* ]]; then
+    [[ -d "$DOKKU_ROOT/$APP" ]] && rm -rf "$DOKKU_ROOT/$APP"
+    dokku_log_fail "App name must begin with lowercase alphanumeric character"
+  fi
   [[ ! -d "$DOKKU_ROOT/$APP" ]] && dokku_log_fail "App $APP does not exist"
 
   return 0
@@ -316,12 +320,23 @@ release_and_deploy() {
       IMAGE_SOURCE_TYPE="dockerfile"
     fi
 
+    DOKKU_APP_SKIP_DEPLOY="$(dokku config:get $APP DOKKU_SKIP_DEPLOY || true)"
+    DOKKU_GLOBAL_SKIP_DEPLOY="$(dokku config:get --global DOKKU_SKIP_DEPLOY || true)"
+
+    DOKKU_SKIP_DEPLOY=${DOKKU_APP_SKIP_DEPLOY:="$DOKKU_GLOBAL_SKIP_DEPLOY"}
+
     dokku_log_info1 "Releasing $APP ($IMAGE)..."
     dokku release "$APP" "$IMAGE_SOURCE_TYPE" "$IMAGE_TAG"
-    dokku_log_info1 "Deploying $APP ($IMAGE)..."
-    dokku deploy "$APP" "$IMAGE_TAG"
-    dokku_log_info2 "Application deployed:"
-    dokku urls $APP | sed "s/^/       /"
+
+    if [[ "$DOKKU_SKIP_DEPLOY" != "true" ]]; then
+      dokku_log_info1 "Deploying $APP ($IMAGE)..."
+      dokku deploy "$APP" "$IMAGE_TAG"
+      dokku_log_info2 "Application deployed:"
+      dokku urls $APP | sed "s/^/       /"
+    else
+      dokku_log_info1 "Skipping deployment"
+    fi
+
     echo
   fi
 }

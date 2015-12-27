@@ -100,6 +100,16 @@ This will prompt you to verify the application's name before destroying it. You 
 dokku --force apps:destroy APP
 ```
 
+### Renaming a deployed app
+
+You can rename a deployed app using the `apps:rename` CLI tool:
+
+```shell
+dokku apps:rename OLD_NAME NEW_NAME
+```
+
+This will copy all of your app's contents into a new app directory with the name of your choice, delete your old app, then rebuild the new version of the app and deploy it. All of your config variables, including database urls, will be preserved.
+
 ### Adding deploy users
 
 While it is possible to use password-based authorization to push to Dokku, it is preferable to use key-based authentication for security. You can add your public key to the dokku user's `authorized_keys` file with the following command:
@@ -115,6 +125,14 @@ cat ~/.ssh/id_rsa.pub | ssh root@dokku.com "sudo sshcommand acl-add dokku [descr
 Dokku only supports deploying from its master branch, so if you'd like to deploy a different local branch use: ```git push dokku <local branch>:master```
 
 You can also support pushing multiple branches using the [receive-branch](/dokku/development/plugin-triggers/#receive-branch) plugin trigger in a custom plugin.
+
+### Skipping deployment
+
+If you only want to rebuild and tag a container, you can skip the deployment phase by setting `$DOKKU_SKIP_DEPLOY` to `true` by running:
+
+``` shell
+dokku config:set ruby-rails-sample DOKKU_SKIP_DEPLOY=true
+```
 
 ### Deploying with private git submodules
 
@@ -162,7 +180,7 @@ This is in particular useful, then you want to deploy to root domain, as
 
 ## Dokku/Docker Container Management Compatibility
 
-Dokku is, at its core, a docker container manager. Thus, it does not necessarily play well with other out-of-band processes interacting with the docker daemon. One thing to note as in [issue #1220](https://github.com/progrium/dokku/issues/1220), dokku executes a cleanup function prior to every deployment. This function removes all exited containers and all 'unattached' images.
+Dokku is, at its core, a docker container manager. Thus, it does not necessarily play well with other out-of-band processes interacting with the docker daemon. One thing to note as in [issue #1220](https://github.com/dokku/dokku/issues/1220), dokku executes a cleanup function prior to every deployment. This function removes all exited containers and all 'unattached' images.
 
 ### Specifying a custom buildpack
 

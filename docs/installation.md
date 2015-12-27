@@ -19,8 +19,8 @@ To install the latest stable version of dokku, you can run the following shell c
 
 ```shell
 # installs dokku via apt-get
-wget https://raw.githubusercontent.com/progrium/dokku/v0.4.4/bootstrap.sh
-sudo DOKKU_TAG=v0.4.4 bash bootstrap.sh
+wget https://raw.githubusercontent.com/dokku/dokku/v0.4.7/bootstrap.sh
+sudo DOKKU_TAG=v0.4.7 bash bootstrap.sh
 ```
 
 The installation process takes about 5-10 minutes, depending upon internet connection speed.
@@ -33,17 +33,17 @@ Once you save your settings, the web admin will self-terminate and you should be
 
 For various reasons, certain hosting providers may have other steps that should be preferred to the above. If hosted on any of the following popular hosts, please follow the linked to instructions:
 
-- [Digital Ocean Installation Notes](http://progrium.viewdocs.io/dokku/getting-started/install/digitalocean)
-- [Linode Installation Notes](http://progrium.viewdocs.io/dokku/getting-started/install/linode/)
-- [Microsoft Azure Installation Notes](http://progrium.viewdocs.io/dokku/getting-started/install/azure/)
+- [Digital Ocean Installation Notes](http://dokku.viewdocs.io/dokku/getting-started/install/digitalocean)
+- [Linode Installation Notes](http://dokku.viewdocs.io/dokku/getting-started/install/linode/)
+- [Microsoft Azure Installation Notes](http://dokku.viewdocs.io/dokku/getting-started/install/azure/)
 
 As well, you may wish to customize your installation in some other fashion. or experiment with vagrant. The guides below should get you started:
 
-- [Debian Package Installation Notes](http://progrium.viewdocs.io/dokku/getting-started/install/debian)
-- [Vagrant Installation Notes](http://progrium.viewdocs.io/dokku/getting-started/install/vagrant)
-- [Advanced Install Customization](http://progrium.viewdocs.io/dokku/advanced-installation)
+- [Debian Package Installation Notes](http://dokku.viewdocs.io/dokku/getting-started/install/debian)
+- [Vagrant Installation Notes](http://dokku.viewdocs.io/dokku/getting-started/install/vagrant)
+- [Advanced Install Customization](http://dokku.viewdocs.io/dokku/advanced-installation)
 
 ---
 
 - <sup>[1]: To check whether your system has an fqdn set, run `sudo hostname -f`</sup>
-- <sup>[2]: If your system has less than 1GB of memory, you can use ([this workaround](http://progrium.viewdocs.io/dokku/advanced-installation)).</sup>
+- <sup>[2]: If your system has less than 1GB of memory, you can use ([this workaround](http://dokku.viewdocs.io/dokku/advanced-installation)).</sup>

@@ -2,12 +2,12 @@
 
 Dokku loves to welcome your contributions. There are several ways to help out:
 
-* Create an [issue](https://github.com/progrium/dokku/issues) on GitHub, if you
+* Create an [issue](https://github.com/dokku/dokku/issues) on GitHub, if you
   have found a bug
 * Write test cases for open bug issues
 * Write patches for open bug/feature issues, preferably with test cases
   included
-* Contribute to the [documentation](http://progrium.viewdocs.io/dokku/)
+* Contribute to the [documentation](http://dokku.viewdocs.io/dokku/)
 
 There are a few guidelines that we need contributors to follow so that we have
 a chance of keeping on top of things.
@@ -41,12 +41,12 @@ encounter an issue. We always appreciate a well-written, thorough bug report,
 and will thank you for it!
 
 Sometimes dokku is missing a feature you need. In some cases, those features can
-be found in pre-existing [plugins](http://progrium.viewdocs.io/dokku/plugins/),
+be found in pre-existing [plugins](http://dokku.viewdocs.io/dokku/plugins/),
 and we encourage our users to create and contribute such packages. From time to
 time, we will also pull plugins into the dokku core when the task they solve is
 a common one for our users.
 
-Check that [our issue database](https://github.com/progrium/dokku/issues)
+Check that [our issue database](https://github.com/dokku/dokku/issues)
 doesn't already include that problem or suggestion before submitting an issue.
 If you find a match, add a quick "+1" or "I have this problem too." Doing this
 helps prioritize the most common problems and requests.
@@ -55,8 +55,10 @@ When reporting issues, please include your host OS (Ubuntu 14.04, Fedora 19,
 etc). Please include:
 
 * The output of `uname -a`.
+* The output of `free -m`
 * The output of `docker version`.
 * The output of `docker -D info`.
+* The output of `docker run -ti gliderlabs/herokuish:latest herokuish version`
 * The output of `dokku version`.
 * The output of `dokku plugin`.
 
@@ -72,13 +74,15 @@ Description of problem:
 Output of the following commands
 
 - `uname -a`:
+- `free -m`:
 - `docker version`:
 - `docker -D info`:
+- `docker run -ti gliderlabs/herokuish:latest herokuish version`:
 - `dokku version`:
 - `dokku plugin`:
 - `docker inspect CONTAINER_ID` (if applicable):
 - `cat /home/dokku/<app>/nginx.conf` (if applicable):
-- Output of failing dokku commands with `dokku trace on` 
+- Output of failing dokku commands with `dokku trace on`
   (BEWARE: `trace on` will print environment variables for some commands, be sure you're not exposing any sensitive information when posting issues):
 
 Environment details (AWS, VirtualBox, physical, etc.):
@@ -108,7 +112,7 @@ Before you contribute to the dokku project, there are a few things that you'll
 need to do
 
 * Make sure you have a [GitHub account](https://github.com/signup/free).
-* Submit an [issue](https://github.com/progrium/dokku/issues), assuming one
+* Submit an [issue](https://github.com/dokku/dokku/issues), assuming one
   does not already exist.
   * Clearly describe the issue including steps to reproduce when it is a bug.
   * Make sure you fill in the earliest version that you know has the issue.
@@ -132,7 +136,7 @@ need to do
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Use descriptive commit messages and reference the #issue number.
 * Core test cases should continue to pass. You can run tests locally or enable
-  [circle-ci](https://circleci.com/gh/progrium/dokku) for your fork, so all
+  [circle-ci](https://circleci.com/gh/dokku/dokku) for your fork, so all
   tests and codesniffs will be executed.
 * Your work should apply the [Dokku coding standards](https://github.com/progrium/bashstyle)
 * Pull requests must be cleanly rebased on top of master without multiple branches
@@ -182,13 +186,13 @@ To run the shellcheck sniffs for Dokku coding standards:
     make ci-dependencies
     make lint
 
-The [testing docs](http://progrium.viewdocs.io/dokku/development/testing/)
+The [testing docs](http://dokku.viewdocs.io/dokku/development/testing/)
 contains installation info for bats and shellcheck.
 
 # Additional Resources
 
 * [Dokku coding standards](https://github.com/progrium/bashstyle)
-* [Existing issues](https://github.com/progrium/dokku/issues)
+* [Existing issues](https://github.com/dokku/dokku/issues)
 * [General GitHub documentation](https://help.github.com/)
 * [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
 * [#dokku IRC channel on freenode.org](https://webchat.freenode.net/?channels=dokku)

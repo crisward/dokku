@@ -1,6 +1,6 @@
 # Plugin triggers
 
-[Plugin triggers](https://github.com/progrium/plugn) (formerly [pluginhooks](https://github.com/progrium/pluginhook)) are a good way to jack into existing dokku infrastructure. You can use them to modify the output of various dokku commands or override internal configuration.
+[Plugin triggers](https://github.com/dokku/plugn) (formerly [pluginhooks](https://github.com/progrium/pluginhook)) are a good way to jack into existing dokku infrastructure. You can use them to modify the output of various dokku commands or override internal configuration.
 
 Plugin triggers are simply scripts that are executed by the system. You can use any language you want, so long as the script:
 
@@ -380,6 +380,27 @@ docker commit $id $IMAGE > /dev/null
 dokku_log_info1 "Building UI Complete"
 ```
 
+### `post-create`
+
+- Description: Can be used to run commands after an application is created.
+- Invoked by: `dokku apps:create`
+- Arguments: `$APP`
+- Example:
+
+```shell
+#!/usr/bin/env bash
+# Runs a command to ensure that an app
+# has a postgres database when it is starting
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1";
+POSTGRES="$1"
+
+dokku postgres:create $POSTGRES
+dokku postgres:link $POSTGRES $APP
+```
+
 ### `post-deploy`
 
 - Description: Allows running of commands after a deploy has completed. Dokku core currently uses this to switch traffic on nginx.
@@ -459,7 +480,7 @@ dokku config:set --no-restart $APP MANUALLY_STOPPED=1
 
 - Description:
 - Invoked by: `dokku build`
-- Arguments: `$APP`
+- Arguments: `$APP $IMAGE_SOURCE_TYPE`
 - Example:
 
 ```shell
@@ -525,9 +546,9 @@ echo false
 
 ### `post-domains-update`
 
-- Description: Allows you to run commands once the domain for an application has been updated.
+- Description: Allows you to run commands once the domain for an application has been updated. It also sends in the command that has been used. This can be "add", "clear" or "remove". The third argument will be the optional list of domains
 - Invoked by: `dokku domains:add`, `dokku domains:clear`, `dokku domains:remove`
-- Arguments: `$APP`
+- Arguments: `$APP` `action name` `domains`
 - Example:
 
 ```shell

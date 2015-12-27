@@ -16,11 +16,11 @@ bootstrap () {
 
 set -eo pipefail
 export DEBIAN_FRONTEND=noninteractive
-export DOKKU_REPO=${DOKKU_REPO:-"https://github.com/progrium/dokku.git"}
+export DOKKU_REPO=${DOKKU_REPO:-"https://github.com/dokku/dokku.git"}
 
 echo "Preparing to install $DOKKU_TAG from $DOKKU_REPO..."
 if ! command -v apt-get &>/dev/null; then
-  echo "This installation script requires apt-get. For manual installation instructions, consult http://progrium.viewdocs.io/dokku/advanced-installation ."
+  echo "This installation script requires apt-get. For manual installation instructions, consult http://dokku.viewdocs.io/dokku/advanced-installation/"
   exit 1
 fi
 
@@ -53,7 +53,7 @@ dokku_install_package() {
   echo "--> Installing docker"
   if uname -r | grep -q linode; then
     echo "--> NOTE: Using Linode? Docker might complain about missing AUFS support."
-    echo "    See http://progrium.viewdocs.io/dokku/getting-started/install/linode/"
+    echo "    See http://dokku.viewdocs.io/dokku/getting-started/install/linode/"
     echo "    Installation will continue in 10 seconds."
     sleep 10
   fi
@@ -90,14 +90,14 @@ elif [[ -n $DOKKU_TAG ]]; then
   elif [[ "$major" -eq "0" ]] && [[ "$minor" -ge "4" ]] && [[ "$patch" -ge "0" ]]; then
     export DOKKU_CHECKOUT="$DOKKU_SEMVER"
     dokku_install_package
-    dokku plugin:install-dependencies --core
+    sudo -E dokku plugin:install-dependencies --core
   else
     export DOKKU_CHECKOUT="$DOKKU_TAG"
     dokku_install_source
   fi
 else
   dokku_install_package
-  dokku plugin:install-dependencies --core
+  sudo -E dokku plugin:install-dependencies --core
 fi
 
 }

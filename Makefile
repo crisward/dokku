@@ -1,7 +1,7 @@
 DOKKU_VERSION = master
 
-SSHCOMMAND_URL ?= https://raw.githubusercontent.com/progrium/sshcommand/master/sshcommand
-PLUGN_URL ?= https://github.com/progrium/dokku/releases/download/v0.4.0/plugn_0.2.0_linux_x86_64.tgz
+SSHCOMMAND_URL ?= https://raw.githubusercontent.com/dokku/sshcommand/master/sshcommand
+PLUGN_URL ?= https://github.com/dokku/plugn/releases/download/v0.2.1/plugn_0.2.1_linux_x86_64.tgz
 STACK_URL ?= https://github.com/gliderlabs/herokuish.git
 PREBUILT_STACK_URL ?= gliderlabs/herokuish:latest
 DOKKU_LIB_ROOT ?= /var/lib/dokku
@@ -38,7 +38,6 @@ package_cloud:
 	package_cloud push dokku/dokku/ubuntu/trusty herokuish*.deb
 	package_cloud push dokku/dokku/ubuntu/trusty sshcommand*.deb
 	package_cloud push dokku/dokku/ubuntu/trusty plugn*.deb
-	package_cloud push dokku/dokku/ubuntu/trusty rubygem*.deb
 	package_cloud push dokku/dokku/ubuntu/trusty dokku*.deb
 
 packer:
@@ -72,10 +71,10 @@ version:
 	git describe --tags > ~dokku/VERSION  2> /dev/null || echo '~${DOKKU_VERSION} ($(shell date -uIminutes))' > ~dokku/VERSION
 
 plugin-dependencies: plugn
-	dokku plugin:install-dependencies --core
+	sudo -E dokku plugin:install-dependencies --core
 
 plugins: plugn docker
-	dokku plugin:install --core
+	sudo -E dokku plugin:install --core
 
 dependencies: apt-update sshcommand plugn docker help2man man-db
 	$(MAKE) -e stack
@@ -140,12 +139,7 @@ count:
 	@find tests -type f -not -name .DS_Store | xargs cat | sed 's/^$$//g' | wc -l
 
 dokku-installer:
-	apt-get install -qq -y ruby
-	test -f /var/lib/dokku/.dokku-installer-created || gem install rack -v 1.5.2 --no-rdoc --no-ri
-	test -f /var/lib/dokku/.dokku-installer-created || gem install rack-protection -v 1.5.3 --no-rdoc --no-ri
-	test -f /var/lib/dokku/.dokku-installer-created || gem install sinatra -v 1.4.5 --no-rdoc --no-ri
-	test -f /var/lib/dokku/.dokku-installer-created || gem install tilt -v 1.4.1 --no-rdoc --no-ri
-	test -f /var/lib/dokku/.dokku-installer-created || ruby contrib/dokku-installer.rb onboot
+	test -f /var/lib/dokku/.dokku-installer-created || python contrib/dokku-installer.py onboot
 	test -f /var/lib/dokku/.dokku-installer-created || service dokku-installer start
 	test -f /var/lib/dokku/.dokku-installer-created || service nginx reload
 	test -f /var/lib/dokku/.dokku-installer-created || touch /var/lib/dokku/.dokku-installer-created
