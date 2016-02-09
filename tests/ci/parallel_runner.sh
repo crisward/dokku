@@ -19,6 +19,14 @@ setup_circle() {
   sudo -E CI=true make -e install
   sudo -E make -e setup-deploy-tests
   make -e ci-dependencies
+  # circleci runs Ubuntu 12.04 and thus a previous version of bash (4.2) than 14.04
+  # sudo apt-get install -y -q "bash=$(apt-cache show bash | egrep "^Version: 4.3" | head -1 | awk -F: '{ print $2 }' | xargs)"
+  bash --version
+  docker version
+  # setup .dokkurc
+  sudo -E mkdir -p /home/dokku/.dokkurc
+  sudo -E chown dokku:ubuntu /home/dokku/.dokkurc
+  sudo -E chmod 775 /home/dokku/.dokkurc
 }
 
 if [[ -n "$CIRCLE_NODE_INDEX" ]] && [[ "$MODE" == "setup" ]]; then
@@ -51,6 +59,8 @@ case "$CIRCLE_NODE_INDEX" in
   2)
     echo "=====> make unit-tests (3/4) on CIRCLE_NODE_INDEX: $CIRCLE_NODE_INDEX"
     sudo -E UNIT_TEST_BATCH=3 make -e unit-tests
+    echo "=====> make deploy tests"
+    sudo -E make -e deploy-test-checks-root deploy-test-config deploy-test-multi
     ;;
 
   3)

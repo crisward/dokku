@@ -9,7 +9,7 @@ import subprocess
 import sys
 import threading
 
-VERSION = 'v0.4.7'
+VERSION = 'v0.4.13'
 
 hostname = ''
 try:
@@ -48,7 +48,7 @@ def check_boot():
             f.write("Description=Dokku web-installer\n")
             f.write("\n")
             f.write("[Service]\n")
-            f.write("ExecStart=#{File.absolute_path(__FILE__)} selfdestruct\n")
+            f.write("ExecStart={0} selfdestruct\n".format(os.path.abspath(__file__)))
             f.write("\n")
             f.write("[Install]\n")
             f.write("WantedBy=multi-user.target\n")
@@ -95,6 +95,9 @@ class GetHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 os.remove('{0}/VHOST'.format(dokku_root))
             except OSError:
                 pass
+        with open('{0}/HOSTNAME'.format(dokku_root), 'w') as f:
+            f.write(params['hostname'].value)
+
 
         command = ['sshcommand', 'acl-add', 'dokku', 'admin']
         for key in params['keys'].value.split("\n"):

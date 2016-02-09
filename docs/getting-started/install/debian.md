@@ -25,7 +25,7 @@ In case you want to perform an unattended installation of dokku, this is made po
 You can set any of the below options through the `debconf-set-selections` command, for example to enable vhost-based deployments:
 
 ```bash
-sudo echo "dokku dokku/vhost_enable boolean true" | debconf-set-selections
+echo "dokku dokku/vhost_enable boolean true" | sudo debconf-set-selections
 ```
 
 After setting the desired options, proceed with the installation as described above.
@@ -37,4 +37,5 @@ After setting the desired options, proceed with the installation as described ab
 | dokku/web_config   | boolean | true                  | Use web-based config for below options                                   |
 | dokku/vhost_enable | boolean | false                 | Use vhost-based deployments (e.g. <app>.dokku.me)                        |
 | dokku/hostname     | string  | dokku.me              | Hostname, used as vhost domain and for showing app URL after deploy      |
+| dokku/skip_key_file| boolean | false                 | Don't check for the existence of the dokku/key_file. Warning: This setting this to true, will require you to manually add an SSH key later on. |
 | dokku/key_file     | string  | /root/.ssh/id_rsa.pub | SSH key to add to the Dokku user (Will be ignored on `dpkg-reconfigure`) |

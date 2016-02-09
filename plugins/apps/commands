@@ -7,13 +7,15 @@ source "$PLUGIN_AVAILABLE_PATH/apps/functions"
 case "$1" in
   apps)
     dokku_log_info2_quiet "My Apps"
-    find $DOKKU_ROOT -follow -maxdepth 1 -type d  \( ! -iname ".*" \)  -not -path $DOKKU_ROOT/tls | sed 's|^\./||g' | sed 's|'$DOKKU_ROOT'\/||' | tail -n +2 | sort
+    for app in $(dokku_apps); do
+      echo "$app"
+    done
     ;;
 
   apps:create)
     apps_create $2
     ;;
-  
+
   apps:rename)
     [[ -z $2 ]] && dokku_log_fail "Please specify an app to run the command on"
     [[ -d "$DOKKU_ROOT/$3" ]] && dokku_log_fail "Name is already taken"
@@ -21,17 +23,18 @@ case "$1" in
     NEW_APP="$3"
 
     mkdir -p "$DOKKU_ROOT/$NEW_APP"
-    docker run --rm -v "$DOKKU_ROOT/$OLD_APP/cache:/cache" "dokku/$OLD_APP" chmod 777 -R /cache
+    docker run $DOKKU_GLOBAL_RUN_ARGS --rm -v "$DOKKU_ROOT/$OLD_APP/cache:/cache" "dokku/$OLD_APP" chmod 777 -R /cache
     rm -rf "$DOKKU_ROOT/$OLD_APP/cache"
     cp -a "$DOKKU_ROOT/$OLD_APP/." "$DOKKU_ROOT/$NEW_APP"
     dokku apps:destroy $OLD_APP --force
     sed -i -e "s/$OLD_APP/$NEW_APP/g" "$DOKKU_ROOT/$NEW_APP/URLS"
     sed -i -e "s/$OLD_APP/$NEW_APP/g" "$DOKKU_ROOT/$NEW_APP/VHOST"
+    sed -i -e "s/git-hook $OLD_APP/git-hook $NEW_APP/g" "$DOKKU_ROOT/$NEW_APP/hooks/pre-receive"
     dokku ps:rebuild $NEW_APP
     plugn trigger post-app-rename $OLD_APP $NEW_APP
     echo "Renaming $OLD_APP to $NEW_APP... done"
     ;;
- 
+
   apps:destroy)
     [[ -z $2 ]] && dokku_log_fail "Please specify an app to run the command on"
     [[ "$2" == "tls" ]] && dokku_log_fail "Unable to destroy tls directory"

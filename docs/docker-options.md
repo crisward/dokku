@@ -2,7 +2,7 @@
 
 > New as of 0.3.17
 
-Pass [options](http://docs.docker.io/en/latest/reference/run/) to Docker during Dokku's `build`, `deploy` and `run` phases
+Pass [options](https://docs.docker.com/engine/reference/run/) to Docker during Dokku's `build`, `deploy` and `run` phases
 
 ```
 docker-options <app>                             Display app's Docker options for all phases
@@ -10,6 +10,12 @@ docker-options <app> <phase(s)>                  Display app's Docker options fo
 docker-options:add <app> <phase(s)> OPTION       Add Docker option to app for phase (comma-separated phase list)
 docker-options:remove <app> <phase(s)> OPTION    Remove Docker option from app for phase (comma-separated phase list)
 ```
+
+> When specifying multiple phases, they **must** be comma-separated _without_ spaces in between each phase, like so:
+>
+> ```
+> dokku docker-options:add myapp deploy,run "-v /home/dokku/logs/myapp:/app/logs"
+> ```
 
 ## About Dokku phases
 

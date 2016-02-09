@@ -1,6 +1,6 @@
 HEROKUISH_DESCRIPTION = 'Herokuish uses Docker and Buildpacks to build applications like Heroku'
 HEROKUISH_REPO_NAME ?= gliderlabs/herokuish
-HEROKUISH_VERSION ?= 0.3.5
+HEROKUISH_VERSION ?= 0.3.8
 HEROKUISH_ARCHITECTURE = amd64
 HEROKUISH_PACKAGE_NAME = herokuish_$(HEROKUISH_VERSION)_$(HEROKUISH_ARCHITECTURE).deb
 
@@ -75,7 +75,7 @@ deb-herokuish: deb-setup
 	cp -rf /tmp/tmp/herokuish /tmp/build/var/lib/herokuish
 
 	echo "-> Creating $(HEROKUISH_PACKAGE_NAME)"
-	sudo fpm -t deb -s dir -C /tmp/build -n herokuish -v $(HEROKUISH_VERSION) -a $(HEROKUISH_ARCHITECTURE) -p $(HEROKUISH_PACKAGE_NAME) --deb-pre-depends 'docker-engine | docker-engine-cs' --deb-pre-depends sudo --after-install /tmp/tmp/post-install --url "https://github.com/$(HEROKUISH_REPO_NAME)" --description $(HEROKUISH_DESCRIPTION) --license 'MIT License' .
+	sudo fpm -t deb -s dir -C /tmp/build -n herokuish -v $(HEROKUISH_VERSION) -a $(HEROKUISH_ARCHITECTURE) -p $(HEROKUISH_PACKAGE_NAME) --deb-pre-depends 'docker-engine-cs | docker-engine | lxc-docker (>= 1.6.1) | docker.io (>= 1.6.1) | tutum-agent' --deb-pre-depends sudo --after-install /tmp/tmp/post-install --url "https://github.com/$(HEROKUISH_REPO_NAME)" --description $(HEROKUISH_DESCRIPTION) --license 'MIT License' .
 	mv *.deb /tmp
 
 deb-dokku: deb-setup
@@ -85,16 +85,19 @@ deb-dokku: deb-setup
 	cp -r debian /tmp/build/DEBIAN
 	mkdir -p /tmp/build/usr/local/bin
 	mkdir -p /tmp/build/var/lib/dokku/core-plugins/available
-	mkdir -p /tmp/build/usr/local/share/man/man1
-	mkdir -p /tmp/build/usr/local/share/dokku/contrib
+	mkdir -p /tmp/build/usr/share/man/man1
+	mkdir -p /tmp/build/usr/share/dokku/contrib
+	mkdir -p /tmp/build/usr/share/doc/dokku
 
 	cp dokku /tmp/build/usr/local/bin
+	cp LICENSE /tmp/build/usr/share/doc/dokku/copyright
 	cp -r plugins/* /tmp/build/var/lib/dokku/core-plugins/available
 	find plugins/ -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read plugin; do touch /tmp/build/var/lib/dokku/core-plugins/available/$$plugin/.core; done
 	$(MAKE) help2man
 	$(MAKE) addman
-	cp /usr/local/share/man/man1/dokku.1 /tmp/build/usr/local/share/man/man1/dokku.1
-	cp contrib/dokku-installer.py /tmp/build/usr/local/share/dokku/contrib
+	cp /usr/local/share/man/man1/dokku.1 /tmp/build/usr/share/man/man1/dokku.1
+	gzip -9 /tmp/build/usr/share/man/man1/dokku.1
+	cp contrib/dokku-installer.py /tmp/build/usr/share/dokku/contrib
 	git describe --tags > /tmp/build/var/lib/dokku/VERSION
 	cat /tmp/build/var/lib/dokku/VERSION | cut -d '-' -f 1 | cut -d 'v' -f 2 > /tmp/build/var/lib/dokku/STABLE_VERSION
 	git rev-parse HEAD > /tmp/build/var/lib/dokku/GIT_REV

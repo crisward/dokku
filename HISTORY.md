@@ -1,6 +1,134 @@
 # History
 
+## 0.4.13
+
+We lied. *This* is the final 0.4.x release. This specific release fixes support for bash `4.2`, which may be the only bash version available for certain testing environments.
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1871: @michaelshobbs Support bash 4.2 so we don't have to modify all plugin test envs
+- #1872: @kenips Update log to better reflect what's going on with CHECKS
+
+## 0.4.12
+
+This is a small bugfix release, which will be the final release before the 0.5.x line. You can follow along on bugs/features we hope to cleanup for 0.5.x [here](https://github.com/dokku/dokku/milestones/v0.5.0).
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1868: @alessio Prevent dokku to hang on events:help
+- #1870: @u2mejc Remove arg check from docker-options/functions, global var cleanup
+
+## 0.4.11
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1840: @alessio Append trailing slash '/' to $PLUGIN_DIR
+- #1841: @michaelshobbs Don't build nginx config if the app has not been deployed
+- #1844: @michaelshobbs Handle multiple old containers and don't attempt to rename a dead container
+- #1845: @michaelshobbs Update nodejs in test apps
+- #1849: @floriangosse Fix logrotate file for debian system
+- #1862: @michaelshobbs Install bash 4.3.x on circleci
+- #1863: @znz Fix a typo in IPV6 detection
+
+### New Features
+
+- #1842: @michaelshobbs skip cleanup in ci to speed up tests
+- #1848: @u2mejc Move docker-options functions to functions file, rework phase_file_path
+- #1855: @jvanbaarsen Add skip_keyfile option for deb package
+- #1864: @znz Remove nullglob from ps commands
+
+### Documentation
+
+- #1838: @Epigene Fixed typo in installation documentation
+- #1843: @sseemayer Move let's encrypt plugin to official plugins
+- #1854: @fedosov Update year in footer (2013-2016)
+- #1856: @madflow Fixed dead documentation link
+- #1859: @dhinus Fix command for debconf-set-selections
+
+## 0.4.10
+
+This release is mostly a bugfix release, though we have a few important changes:
+
+- `dokku plugin:update` can now be used to update a specific plugin. Previously, this could potentially result in an error a user would have to manually resolve.
+- We have started labeling all dokku-managed containers. In a future minor release, triggering a `dokku cleanup` will remove *only* exited containers that are managed by dokku. This change allows users to start containers outside of dokku and be assured that dokku would not inadvertently remove them.
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1818: @josegonzalez Fix pre-receive git-hook in apps:rename
+- #1819: @andrewsomething Write out /home/dokku/HOSTNAME as specified by the web installer.
+- #1823: @josegonzalez Fix output formatting of dokku apps
+- #1827: @michaelshobbs Use docker 1.9.0 on circleci
+- #1834: @jvanbaarsen Make sure we ignore hidden files in the SSL cert check
+- #1835: @josegonzalez Add support to herokuish for more versions of docker-engine
+- #1837: @michaelshobbs Add back some deploy tests that test dokku functionality
+
+### New Features
+
+- #1826: @michaelshobbs Implement plugn update
+- #1828: @michaelshobbs Label all dokku-managed containers
+- #1829: @michaelshobbs Implement dokku report command
+
+### Documentation
+
+- #1822: --no-restart option after config:set not before
+
+## 0.4.9
+
+This release is significant for two reasons:
+
+- A bugfix for git submodule support that was broken in 0.4.7
+- Improved and tested support for modern variants of Ubuntu/Debian. This should also improve support for docker-based deployments of dokku, as well as potential support for the upcoming Ubuntu 16.04 release.
+
+Thanks to all the contributors who helped with this release!
+
+### Bug Fixes
+
+- #1810: @josegonzalez Fix debian packaging for usage inside of docker containers
+- #1814: @blackxored Add support for new method of extracting container IP
+- #1807: @josegonzalez Allow updating submodules at any revision
+
+### New Features
+
+- #1812: @josegonzalez Fully-tested debian packaging for modern Ubuntu/Debian distributions
+
+### Documentation
+
+- #1811: @josegonzalez Add dokku haproxy to plugins
+
+## 0.4.8
+
+If upgrading to 0.4.8, please note that we have tightened the application naming schema, per docker requirements. Upgrade your dokku installation to 0.4.7 first to take advantage of the `dokku apps:rename` command if you are having issues with the new requirement.
+
+### Bug Fixes
+
+- #1804: @josegonzalez Fix deprecated version constraint usage in debian control file
+- #1798: @michaelshobbs Ensure app name begins with lowercase alphanumeric character
+- #1808: @josegonzalez Fix path to dokku-installer
+
+### New Features
+
+- #1801: @josegonzalez Allow setting DOKKU_LIB_ROOT env var to modify the lib path on install
+- #1803: @michaelshobbs update plugn download url and version
+
+### Documentation
+
+- #1809: @josegonzalez Remove non-zero downtime version of letsencrypt plugin
+
 ## 0.4.7
+
+A few notable new features:
+
+- The new `dokku apps:rename` command. It does not update linked containers, but is useful in many other cases.
+- Updated git clone methodology to be more performant for large repositories.
+- Moved the dokku-installer from Ruby to Python, allowing us to drop Ruby as a dependency. Python comes with the linux standard base, and should therefore be accessible on more systems.
 
 ### Bug Fixes
 
@@ -17,7 +145,7 @@
 - #1771: @jvanbaarsen Make plugin hooks send out more information
 - #1778: @mmerickel Optimize git clone for large repositories
 - #1781: @jvanbaarsen Add post config update hook
-- #1789: @michaelshobbs Make it possible to skip a deploy
+- #1789: @lvillani Make it possible to skip a deploy
 - #1790: @michaelshobbs Use pgup/pgdown for history shortcut in dev env
 - #1794: @josegonzalez Replace dokku-installer.rb with dokku-installer.py
 - #1797: @michaelshobbs Ensure we run plugin commands as root
@@ -82,6 +210,7 @@ Thanks to all the contributors who helped with this release!
 
 - #1666: @michaelshobbs Revert dokku group changes and add dokku user to adm group
 - #1667: @u2mejc Fix dokku certs:add file input bug
+- #1682: @michaelshobbs Aet nullglob when looking for PORT files
 - #1684: @u2mejc Cause certs:remove to return non zero on error
 - #1690: @u2mejc Fix "App tls has not been deployed" error
 - #1696: @michaelshobbs chown plugins paths to dokku:dokku
@@ -96,7 +225,6 @@ Thanks to all the contributors who helped with this release!
 - #1709: @michaelshobbs Fix Must specify DOMAIN error over ssh
 - #1712: @michaelshobbs filter incompatible docker option when building dockerfile vs herokuish apps
 - #1715: @michaelshobbs use patched static buildpack in test
-- @1682: @michaelshobbs Aet nullglob when looking for PORT files
 
 ### New Features
 
