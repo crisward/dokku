@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 BOX_NAME = ENV["BOX_NAME"] || "bento/ubuntu-14.04"
-BOX_MEMORY = ENV["BOX_MEMORY"] || "2048"
+BOX_MEMORY = ENV["BOX_MEMORY"] || "4096"
 DOKKU_DOMAIN = ENV["DOKKU_DOMAIN"] || "dokku.me"
 DOKKU_IP = ENV["DOKKU_IP"] || "10.0.0.2"
 FORWARDED_PORT = (ENV["FORWARDED_PORT"] || '8080').to_i
@@ -48,6 +48,7 @@ Vagrant::configure("2") do |config|
     vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
     vm.vm.hostname = "#{DOKKU_DOMAIN}"
     vm.vm.network :private_network, ip: DOKKU_IP
+    vm.vm.network "public_network", bridge: 'en0: Ethernet',ip: "192.168.1.22"
     vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update > /dev/null && apt-get -qq -y install git > /dev/null && cd /root/dokku && #{make_cmd}"
     vm.vm.provision :shell, :inline => "cd /root/dokku && make dokku-installer"
     vm.vm.provision :shell do |s|
@@ -66,6 +67,7 @@ Vagrant::configure("2") do |config|
     vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
     vm.vm.hostname = "#{DOKKU_DOMAIN}"
     vm.vm.network :private_network, ip: DOKKU_IP
+    vm.vm.network "public_network", bridge: 'en0: Ethernet',ip: "192.168.1.22"
     vm.vm.provision :shell, :inline => "cd /root/dokku && make install-from-deb"
   end
 
@@ -74,6 +76,7 @@ Vagrant::configure("2") do |config|
     vm.vm.network :forwarded_port, guest: 80, host: FORWARDED_PORT
     vm.vm.hostname = "#{DOKKU_DOMAIN}"
     vm.vm.network :private_network, ip: DOKKU_IP
+    vm.vm.network "public_network", bridge: 'en0: Ethernet',ip: "192.168.1.22"
     vm.vm.provision :shell, :inline => "export DEBIAN_FRONTEND=noninteractive && apt-get update > /dev/null && apt-get -qq -y install git > /dev/null && cd /root/dokku && #{make_cmd}"
     vm.vm.provision :shell, :inline => "cd /root/dokku && make deb-all"
   end
